@@ -1,4 +1,4 @@
-package ir.digikala.session7;
+package ir.mapsa.javacourse.session7;
 
 import java.util.HashSet;
 import java.util.Set;

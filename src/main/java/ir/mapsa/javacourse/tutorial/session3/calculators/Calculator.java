@@ -1,4 +1,4 @@
-package ir.digikala.tutorial.session3.calculators;
+package ir.mapsa.javacourse.tutorial.session3.calculators;
 
 public class Calculator {
     private Integer a;

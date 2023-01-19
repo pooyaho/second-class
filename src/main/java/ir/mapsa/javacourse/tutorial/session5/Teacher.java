@@ -1,4 +1,4 @@
-package ir.digikala.tutorial.session5;
+package ir.mapsa.javacourse.tutorial.session5;
 
 public class Teacher extends Person{
     private Integer teachCourses;

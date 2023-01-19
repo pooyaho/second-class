@@ -1,7 +1,7 @@
-package ir.digikala.tutorial.session3.main;
+package ir.mapsa.javacourse.tutorial.session3.main;
 
-import ir.digikala.tutorial.session3.calculators.Calculator;
-import ir.digikala.tutorial.session3.calculators.Tuple;
+import ir.mapsa.javacourse.tutorial.session3.calculators.Calculator;
+import ir.mapsa.javacourse.tutorial.session3.calculators.Tuple;
 
 public class MyClass {
     public static void main(String[] args) {

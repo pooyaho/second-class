@@ -1,4 +1,4 @@
-package ir.digikala.session7;
+package ir.mapsa.javacourse.session7;
 
 public class BaseClass {
     private Long id;
