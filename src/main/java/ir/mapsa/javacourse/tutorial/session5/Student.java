@@ -1,7 +1,12 @@
 package ir.mapsa.javacourse.tutorial.session5;
 
-public class Student extends Person<Long> {
+import java.io.Serializable;
+
+public class Student extends Person<Long> implements Serializable {
+
+    private static final long serialVersionUID = 1655405904508623923L;
     private Integer passedCourse;
+    private String fatherName;
 
     public Student(String name, String family, String nationalId, Long id, Integer age, Integer passedCourse) {
         super(name, family, nationalId, id, age);
@@ -30,6 +35,14 @@ public class Student extends Person<Long> {
 
     public void setPassedCourse(Integer passedCourse) {
         this.passedCourse = passedCourse;
+    }
+
+    public String getFatherName() {
+        return fatherName;
+    }
+
+    public void setFatherName(String fatherName) {
+        this.fatherName = fatherName;
     }
 }
 

@@ -1,6 +1,10 @@
 package ir.mapsa.javacourse.tutorial.session5;
 
-public abstract class Person<T> {
+import java.io.Serializable;
+
+
+public abstract class Person<T> implements Serializable {
+    private static final long serialVersionUID = -8615089633896207189L;
     protected String name;
     private String family;
     private String nationalId;
