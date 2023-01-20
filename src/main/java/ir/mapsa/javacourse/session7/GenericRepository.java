@@ -1,9 +1,6 @@
 package ir.mapsa.javacourse.session7;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Objects;
 
 public class GenericRepository<T> {
