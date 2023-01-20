@@ -8,7 +8,9 @@ import java.nio.charset.StandardCharsets;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException {
+
+
         File file = new File("myfile.txt");
 //        URL url = new URL("https://google.com");
 //        byte[] bytes = new byte[1024];
@@ -24,19 +26,34 @@ public class Main {
 //        os.write("سلام دنیا".getBytes(StandardCharsets.UTF_8));
 //        os.flush();
 //        os.close();
-        try(FileWriter fileWriter = new FileWriter(file, true);
-            BufferedWriter bw = new BufferedWriter(fileWriter)) {
-
+        FileWriter fileWriter = null;
+        BufferedWriter bw = null;
+        try {
+            fileWriter = new FileWriter(file, true);
+            bw = new BufferedWriter(fileWriter);
 //            PrintWriter pw = new PrintWriter(fileWriter);
 //        fileWriter.append("Hello world");
 //        fileWriter.flush();
 //        fileWriter.close();
             bw.append("Hello world\n");
             bw.flush();
+            bw.close();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Exception in file writing",e);
+
+        } finally {
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+            if (bw != null) {
+                bw.close();
+            }
         }
 
-        try(FileReader fr = new FileReader(file);
-            BufferedReader bf = new BufferedReader(fr)) {
+        try (FileReader fr = new FileReader(file);
+             BufferedReader bf = new BufferedReader(fr)) {
 
 //        char[] chars = new char[1024];
 //
