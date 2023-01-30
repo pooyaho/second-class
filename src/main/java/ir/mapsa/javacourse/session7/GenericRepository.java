@@ -11,8 +11,9 @@ public class GenericRepository<T> {
         this.elements = new BaseClass[100];
     }
 
-    public GenericRepository(GenericRepository<T> repo) {
 
+    public GenericRepository(GenericRepository<T> repo) {
+        this.elements = repo.elements;
     }
 
     public GenericRepository(int size) {
@@ -23,11 +24,11 @@ public class GenericRepository<T> {
 
     }
 
-    private void extendArray() {
+    private synchronized void extendArray() {
 
     }
 
-    public void add(T element) {
+    public synchronized void add(T element) {
 
         if (emptyIndex >= elements.length) {
             extendArray();
@@ -36,9 +37,9 @@ public class GenericRepository<T> {
 
     }
 
-    public T get(int index) throws InvalidIndexException {
+    public T get(int index) throws InvalidIndexException, ArrayIndexOutOfBoundsException, Exception {
         if (isIndexInvalid(index)) {
-            throw new InvalidIndexException("invalid index "+index);
+            throw new InvalidIndexException("invalid index " + index);
         }
         return (T) elements[index];
     }
@@ -142,11 +143,11 @@ public class GenericRepository<T> {
 //    public static  void remove(List<? extends BaseClass> a, int index){
 //
 //    }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         GenericRepository<String> g = new GenericRepository<>();
         try {
             g.get(-1);
-        } catch (InvalidIndexException e) {
+        } catch (Exception  e) {
             throw new RuntimeException(e);
         }
     }

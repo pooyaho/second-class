@@ -1,10 +1,6 @@
 package ir.mapsa.javacourse.io;
 
-import ir.mapsa.javacourse.tutorial.session5.Student;
-
 import java.io.*;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 public class Main {
 
@@ -26,30 +22,19 @@ public class Main {
 //        os.write("سلام دنیا".getBytes(StandardCharsets.UTF_8));
 //        os.flush();
 //        os.close();
-        FileWriter fileWriter = null;
-        BufferedWriter bw = null;
-        try {
-            fileWriter = new FileWriter(file, true);
-            bw = new BufferedWriter(fileWriter);
-//            PrintWriter pw = new PrintWriter(fileWriter);
+        try (FileWriter fileWriter = new FileWriter(file, true); BufferedWriter bw = new BufferedWriter(fileWriter)) {
+            //            PrintWriter pw = new PrintWriter(fileWriter);
 //        fileWriter.append("Hello world");
 //        fileWriter.flush();
 //        fileWriter.close();
             bw.append("Hello world\n");
             bw.flush();
-            bw.close();
-            fileWriter.close();
+
+
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Exception in file writing",e);
+            throw new RuntimeException("Exception in file writing", e);
 
-        } finally {
-            if (fileWriter != null) {
-                fileWriter.close();
-            }
-            if (bw != null) {
-                bw.close();
-            }
         }
 
         try (FileReader fr = new FileReader(file);
