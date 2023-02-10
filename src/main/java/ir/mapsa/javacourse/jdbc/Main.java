@@ -1,10 +1,12 @@
 package ir.mapsa.javacourse.jdbc;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Main {
-    static  {
+    static {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
@@ -42,20 +44,26 @@ public class Main {
 //        statement.close();
 //        connection.close();
         Main main = new Main();
-//        UserEntity user = new UserEntity();
-//        user.setUsername("john_doe");
-//        user.setPassword("1234");
+        UserEntity user = new UserEntity();
+        user.setUsername("john_doe");
+        user.setPassword("1234");
 //        user.setId(502L);
-//        main.update(user);
-        Optional<UserEntity> byId = main.findById(502L);
-        byId.ifPresent(i->{
-            String text = "user name is : " + i.getUsername() + "   password is : " + i.getPassword();
-            System.out.println(text);
-        });
+        main.insert(null);
+//        Optional<UserEntity> byId = main.findById(502L);
+//        byId.ifPresent(i->{
+//            String text = "user name is : " + i.getUsername() + "   password is : " + i.getPassword();
+//            System.out.println(text);
+//        });
 
     }
 
     public void insert(UserEntity user) throws ClassNotFoundException, SQLException {
+        if (user == null) {
+            throw new IllegalArgumentException("user is null");
+        }
+        if (user.getPassword() == null || user.getUsername() == null) {
+            throw new IllegalArgumentException("username or password is null");
+        }
         Connection connection = getConnection();
 
         String insertQuery = "insert into users(username,password) values(?,?);";
@@ -69,6 +77,18 @@ public class Main {
     }
 
     public void update(UserEntity user) throws ClassNotFoundException, SQLException {
+        if (user == null) {
+            throw new IllegalArgumentException("user is null");
+        }
+        if (user.getPassword() == null ) {
+            throw new IllegalArgumentException("password is null");
+        }
+        if (user.getUsername() == null ) {
+            throw new IllegalArgumentException("username is null");
+        }
+        if (user.getId()==null) {
+            throw new IllegalArgumentException("id is null");
+        }
         Connection connection = getConnection();
 
         String updateQuery = "update users set username=? ,password=? where id=?;";
@@ -83,6 +103,9 @@ public class Main {
     }
 
     public void deleteById(Long id) throws ClassNotFoundException, SQLException {
+        if (id==null) {
+            throw new IllegalArgumentException("id is null");
+        }
         Connection connection = getConnection();
 
         String deleteQuery = "delete from users where id=?;";
@@ -94,6 +117,9 @@ public class Main {
     }
 
     public Optional<UserEntity> findById(Long id) throws ClassNotFoundException, SQLException {
+        if (id==null) {
+            throw new IllegalArgumentException("id is null");
+        }
         Connection connection = getConnection();
 
         String selectQuery = "select * from users where id=?;";
@@ -102,14 +128,49 @@ public class Main {
         ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()) {
-            UserEntity userEntity=new UserEntity();
+            UserEntity userEntity = new UserEntity();
             userEntity.setId(id);
             userEntity.setPassword(resultSet.getString("password"));
             userEntity.setUsername(resultSet.getString("username"));
             return Optional.of(userEntity);
-
         }
         return Optional.empty();
+
+    }
+
+    public List<UserEntity> find(UserEntity entity) throws ClassNotFoundException, SQLException {
+        if (entity==null) {
+            throw new IllegalArgumentException("entity is null");
+        }
+        Connection connection = getConnection();
+
+        String selectQuery;
+        PreparedStatement preparedStatement;
+        if (entity.getUsername() != null) {
+            selectQuery = "select * from users where username like %?%;";
+            preparedStatement = connection.prepareStatement(selectQuery);
+            preparedStatement.setString(1, entity.getUsername());
+        }else if (entity.getId() != null) {
+            selectQuery = "select * from users where id=?;";
+            preparedStatement = connection.prepareStatement(selectQuery);
+            preparedStatement.setLong(1, entity.getId());
+
+        }else{
+            selectQuery = "select * from users;";
+            preparedStatement = connection.prepareStatement(selectQuery);
+
+
+        }
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<UserEntity> result = new ArrayList<>();
+        while (resultSet.next()) {
+            UserEntity userEntity = new UserEntity();
+            userEntity.setId(resultSet.getLong("id"));
+            userEntity.setPassword(resultSet.getString("password"));
+            userEntity.setUsername(resultSet.getString("username"));
+            result.add(userEntity);
+        }
+        return result;
 
     }
 
