@@ -45,10 +45,11 @@ public class Main {
 //        connection.close();
         Main main = new Main();
         UserEntity user = new UserEntity();
-        user.setUsername("john_doe");
-        user.setPassword("1234");
+        user.setUsername("ali");
+        List<UserEntity> userEntities = main.find(user);
+        System.out.println(userEntities.size());
 //        user.setId(502L);
-        main.insert(null);
+
 //        Optional<UserEntity> byId = main.findById(502L);
 //        byId.ifPresent(i->{
 //            String text = "user name is : " + i.getUsername() + "   password is : " + i.getPassword();
@@ -147,9 +148,9 @@ public class Main {
         String selectQuery;
         PreparedStatement preparedStatement;
         if (entity.getUsername() != null) {
-            selectQuery = "select * from users where username like %?%;";
+            selectQuery = "select * from users where username like ? ESCAPE '!';";
             preparedStatement = connection.prepareStatement(selectQuery);
-            preparedStatement.setString(1, entity.getUsername());
+            preparedStatement.setString(1, "%"+ entity.getUsername() +"%");
         }else if (entity.getId() != null) {
             selectQuery = "select * from users where id=?;";
             preparedStatement = connection.prepareStatement(selectQuery);
@@ -158,8 +159,6 @@ public class Main {
         }else{
             selectQuery = "select * from users;";
             preparedStatement = connection.prepareStatement(selectQuery);
-
-
         }
         ResultSet resultSet = preparedStatement.executeQuery();
         List<UserEntity> result = new ArrayList<>();
@@ -171,7 +170,6 @@ public class Main {
             result.add(userEntity);
         }
         return result;
-
     }
 
     private static Connection getConnection() throws ClassNotFoundException, SQLException {
