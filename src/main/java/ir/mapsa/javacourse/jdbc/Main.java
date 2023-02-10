@@ -1,5 +1,7 @@
 package ir.mapsa.javacourse.jdbc;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +46,14 @@ public class Main {
 //        statement.close();
 //        connection.close();
         Main main = new Main();
-        UserEntity user = new UserEntity();
-        user.setUsername("ali");
-        List<UserEntity> userEntities = main.find(user);
-        System.out.println(userEntities.size());
+//        UserEntity user = new UserEntity();
+//        user.setPassword("123");
+//        user.setUsername("someone");
+//        main.insert(user);
+        main.bulkUpdatePassword();
+//        user.setId(502L);
+//        List<UserEntity> userEntities = main.find(user);
+//        System.out.println(userEntities.size());
 //        user.setId(502L);
 
 //        Optional<UserEntity> byId = main.findById(502L);
@@ -57,6 +63,26 @@ public class Main {
 //        });
 
     }
+
+    public void bulkUpdatePassword() throws SQLException, ClassNotFoundException {
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("select * from users;");
+        String query = "update users set password=? where id=?";
+        PreparedStatement prepareStatement = connection.prepareStatement(query);
+        while (resultSet.next()) {
+
+            String password = resultSet.getString("password");
+            if (resultSet.isLast()) {
+                continue;
+            }
+            prepareStatement.setString(1,DigestUtils.sha256Hex(password));
+            prepareStatement.setLong(2,resultSet.getLong("id"));
+            prepareStatement.executeUpdate();
+        }
+
+    }
+
 
     public void insert(UserEntity user) throws ClassNotFoundException, SQLException {
         if (user == null) {
@@ -71,7 +97,7 @@ public class Main {
 
         PreparedStatement statement = connection.prepareStatement(insertQuery);
         statement.setString(1, user.getUsername());
-        statement.setString(2, user.getPassword());
+        statement.setString(2, DigestUtils.sha1Hex( user.getPassword()));
         statement.executeUpdate();
         statement.close();
         connection.close();
@@ -95,7 +121,7 @@ public class Main {
         String updateQuery = "update users set username=? ,password=? where id=?;";
         PreparedStatement statement = connection.prepareStatement(updateQuery);
         statement.setString(1, user.getUsername());
-        statement.setString(2, user.getPassword());
+        statement.setString(2, DigestUtils.sha1Hex(user.getPassword()));
         statement.setLong(3, user.getId());
         statement.executeUpdate();
         statement.close();
@@ -167,8 +193,10 @@ public class Main {
             userEntity.setId(resultSet.getLong("id"));
             userEntity.setPassword(resultSet.getString("password"));
             userEntity.setUsername(resultSet.getString("username"));
+
             result.add(userEntity);
         }
+
         return result;
     }
 
