@@ -7,7 +7,6 @@ public class CompositeDepartment {
         this.department = department;
     }
 
-
     public void print() {
         System.out.println("Before ");
         department.print();
